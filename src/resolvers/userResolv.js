@@ -1,6 +1,8 @@
 import { config } from 'dotenv'
 import userModel from "../models/userModel.js"
 import { encrypt, decrypt } from "../utils/encrypt.js"
+import CryptoJS from 'crypto-js'
+import { v4 as uuidv4 } from 'uuid'
 
 config()
 
@@ -23,9 +25,9 @@ export const user = async (_,{filter = {}}) => {
 export const userCreate = async (_,{input = {}}) => {
   try {
     const { firstName, lastName, email, password } = input
-    const encryptedPassword = encrypt(password,process.env.NODE_KEY_DECRYPTED)
-
+    const encryptedPassword = CryptoJS.SHA512(password)
     const data = {
+      _id: uuidv4().toString(),
       firstName,
       lastName,
       email,

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import categoryModel from "../models/categoryModel.js";
 
 export const category = async (_, { filter = {} }) => {
@@ -19,6 +20,7 @@ export const categoryCreate = async (_, { input }) => {
   try {
     const { key, name } = input
     const data = {
+      _id: uuidv4().toString(),
       key,
       name
     }

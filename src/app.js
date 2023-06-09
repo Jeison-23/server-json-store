@@ -25,7 +25,7 @@ const typeDefs = `
     _id: String
     name: String
     description: String
-    categoryId: String
+    category: Category
     price: Int
     stock: Int
   }
