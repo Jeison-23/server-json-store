@@ -1,33 +1,29 @@
 import productModel from '../models/productModel.js'
 import { v4 as uuidv4 } from 'uuid';
 
-export const product = async (_, { filter = {}}) => {
+export const product = async (_, { filter = {} }) => {
   try {
-    const { _id, name, categoryId, price } =  filter
+    const { _id, name, categoryId, price } = filter
     const query = {}
     if (_id) query._id = _id
-    if (name) query.name = {$regex: name, $options: 'i'}
+    if (name) query.name = { $regex: name, $options: 'i' }
     if (categoryId) query.categoryId = categoryId
     if (price) query.price = price
 
     const data = productModel.aggregate([])
-    .match(query)
-    .lookup({ //Join de Sql
-      from: "categories",
-      localField: "categoryId",
-      foreignField: "_id",
-      as: "category"
-    })
-    .unwind({path: '$category', preserveNullAndEmptyArrays: true})
+      .match(query)
+      .lookup({ //Join de Sql
+        from: "categories",
+        localField: "categoryId",
+        foreignField: "_id",
+        as: "category"
+      })
+      .unwind({ path: '$category', preserveNullAndEmptyArrays: true })
 
-    const dee = await data.exec()
-
-    console.log('data',dee)
-
-   return dee
+    return await data.exec()
 
   } catch (e) {
-    console.log('error get product',e);
+    console.log('error get product', e);
   }
 
 }
