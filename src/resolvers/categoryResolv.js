@@ -30,10 +30,11 @@ export const categoryCreate = async (_, { input }) => {
 
   } catch (e) {
     console.log('error create category',e);
+    return e.toString()
   }
 }
 
-export const categoryUpdate = async (_,{ input }) => {
+export const categoryUpdate = async (_, { input }) => {
   try {
     const { _id, key, name } = input
     const update = { $set: {} }
@@ -46,17 +47,30 @@ export const categoryUpdate = async (_,{ input }) => {
     
   } catch (e) {
     console.log('error update category',e);
+    return e.toString()
   }
 }
 
 export const categorySave = async (_, args) => {
   try {
-    const { _id } = args.input
-    if (_id) return categoryUpdate(_, args)
+    const { _id } = args?.input
 
+    if ( _id ) return categoryUpdate(_, args)
     else return categoryCreate(_, args)
 
   } catch (e) {
     console.log('error save category', e);
+    return e.toString()
+  }
+}
+
+export const categoryDelete = async (_, args) => {
+  try {
+    const response = await categoryModel.deleteOne({ _id: args._id })
+    return response.acknowledged
+
+  } catch (e) {
+    console.log('error delete category', e);
+    return e.toString()
   }
 }
