@@ -1,10 +1,6 @@
-import { config } from 'dotenv'
 import userModel from "../models/userModel.js"
-import { encrypt, decrypt } from "../utils/encrypt.js"
 import CryptoJS from 'crypto-js'
 import { v4 as uuidv4 } from 'uuid'
-
-config()
 
 export const user = async (_,{filter = {}}) => {
   try {
@@ -16,7 +12,17 @@ export const user = async (_,{filter = {}}) => {
     if (email) query.email = {$regex: email, $options: 'i'}
     if (password) query.password = {$regex: password, $options: 'i'}
 
-    return  await userModel.find(query)
+    const data = userModel.aggregate([])
+    .match(query)
+    .lookup({
+      from: "roles",
+      localField: "roleId",
+      foreignField: "_id",
+      as: "role"
+    })
+    .unwind({path:'$role', preserveNullAndEmptyArrays: true})
+    return  await data.exec()
+
   } catch (e) {
     console.log('error get user',e);
   }
@@ -24,12 +30,14 @@ export const user = async (_,{filter = {}}) => {
 
 export const userCreate = async (_,{input = {}}) => {
   try {
-    const { firstName, lastName, email, password } = input
+    const { roleId, firstName, lastName, phone, email, password } = input
     const encryptedPassword = CryptoJS.SHA512(password)
     const data = {
       _id: uuidv4().toString(),
+      roleId,
       firstName,
       lastName,
+      phone,
       email,
       password: encryptedPassword
     }
@@ -45,10 +53,11 @@ export const userCreate = async (_,{input = {}}) => {
 
 export const userUpdate = async (_,{input = {}}) => {
   try {
-    const { _id, firstName, lastName, email } = input
+    const { _id, firstName, lastName, phone, email } = input
     const update = {$set:{}}
     if(firstName) update.$set.firstName = firstName
-    if(lastName) update.$set.email = email
+    if(lastName) update.$set.lastName = lastName
+    if(phone) update.$set.phone = phone
     if(email) update.$set.email = email
 
     const response = await userModel.findOneAndUpdate({_id},update,{new: true})
@@ -68,5 +77,15 @@ export const userSave = async (_, args= {}) => {
     
   } catch (e) {
     console.log('error create user',e);
+  }
+}
+
+export const userDelete = async (_, {_id}) => {
+  try {
+    const response = await userModel.deleteOne({_id})
+    return response.acknowledged
+    
+  } catch (e) {
+    console.log('error delete user',e);
   }
 }

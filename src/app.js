@@ -2,8 +2,9 @@ import './dataBase/connection.js';
 import './utils/encrypt.js';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import { user, userSave, userDelete } from './resolvers/userResolv.js';
+import { role, roleSave, roleDelete } from './resolvers/roleResolv.js';
 import { product, productSave, productDelete } from './resolvers/productResolv.js';
-import { user, userSave } from './resolvers/userResolv.js';
 import { category, categorySave, categoryDelete } from './resolvers/categoryResolv.js';
 
 const typeDefs = `
@@ -39,22 +40,38 @@ const typeDefs = `
     stock: Int
   }
 
+  #----role------#
+
+  type Role {
+    _id: String
+    key: String
+    rol: String
+  }
+
+  input roleInput {
+    _id: String
+    key: String
+    rol: String
+  }
+
   #----user------#
 
   type User {
     _id: String
+    role: Role
     firstName: String
     lastName: String
-    phone: Int
+    phone: String
     email: String
     password: String
   }
 
   input userInput {
     _id: String
+    roleId: String
     firstName: String
     lastName: String
-    phone: Int
+    phone: String
     email: String
     password: String
   }
@@ -62,13 +79,17 @@ const typeDefs = `
   #----query-----#
 
   type Query {
+    role: [Role]
     user: [User]
     category: [Category]
     product: [Product]
   }
 
   type Mutation {
+    roleSave(input: roleInput): ID
+    roleDelete(_id: String): Boolean
     userSave(input: userInput): ID
+    userDelete(_id: String): Boolean
     categorySave(input: categoryInput): ID
     categoryDelete(_id: String): Boolean
     productSave(input: productInput): ID
@@ -78,12 +99,16 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
+    role,
     user,
     category,
     product
   },
   Mutation: {
+    roleSave,
+    roleDelete,
     userSave,
+    userDelete,
     categorySave,
     categoryDelete,
     productSave,
