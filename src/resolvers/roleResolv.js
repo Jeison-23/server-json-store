@@ -34,11 +34,12 @@ const roleCreate = async (_, {input = {}}) => {
       return roleCreated._id
 
     } else {
-      throw new Error(`el key: [${key}] de role ya  existe`)
+      throw new Error(`El key: "${key}", del role ya existe.`)
     }
     
   } catch (e) {
-    console.log('error create role',e);
+    // console.log('error create role',e)
+    return e
   }
 }
 
@@ -46,14 +47,15 @@ const roleUpdate = async (_, {input = {}}) => {
   try {
     const { _id, key, rol } = input
     const update = {$set:{}}
-    if(key) update.$set.key = key
+    // if(key) update.$set.key = key
     if(rol) update.$set.rol = rol
 
     const response = await roleModel.findOneAndUpdate({_id},update,{new: true})
     return response._id
 
   } catch (e) {
-    console.log('error create user',e)
+    //console.log('error create user',e)
+    return e
   }
 }
 
