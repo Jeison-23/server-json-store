@@ -1,11 +1,16 @@
 import './dataBase/connection.js';
 import './utils/encrypt.js';
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import { ApolloServer } from "@apollo/server";
 import { user, userSave, userDelete } from './resolvers/userResolv.js';
 import { role, roleSave, roleDelete } from './resolvers/roleResolv.js';
 import { product, productSave, productDelete } from './resolvers/productResolv.js';
 import { category, categorySave, categoryDelete } from './resolvers/categoryResolv.js';
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs"
+import { ApolloServerPluginLandingPageProductionDefault } from 'apollo-server-core'
+import express from 'express'
+import cors from 'cors';
+import http from 'http';
+import { expressMiddleware } from '@apollo/server/express4';
 
 const typeDefs = `
   type Category {
@@ -71,6 +76,8 @@ const typeDefs = `
     roleId: String
     firstName: String
     lastName: String
+    id: Int
+    typeId: String
     phone: String
     email: String
     password: String
@@ -116,13 +123,57 @@ const resolvers = {
   }
 }
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-})
+const PORT = 4040;
 
-const { url } = await startStandaloneServer(server, {
-  listen: { port: 4040 },
-})
+export async function startApolloServer() {
 
-console.log(`🚀  Server ready at: ${url}`)
+  const app = express();
+
+  app.use(
+    graphqlUploadExpress(),
+    express.static("public")
+  )
+
+  const httpServer = http.createServer(app);  
+
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    csrfPrevention: true,
+    cache: 'bounded',
+    introspection: true,
+    plugins: [
+      // Install a landing page plugin based on NODE_ENV
+      ApolloServerPluginLandingPageProductionDefault({
+        embed: true
+      })
+     ],
+  });
+
+  await server.start();
+
+  //Middlewares
+  app.use(
+    "/gql",
+    cors(),
+    express.json(),
+    expressMiddleware(server)
+  );
+
+  app.get('/', (req, res) => {
+    res.send('Bienvenido a mi GraphQl API');
+  });
+
+  await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
+  
+  console.log(`http://localhost:${PORT}/gql`);
+}
+
+startApolloServer(); 
+
+
+// const { url } = await startStandaloneServer(server, {
+//   listen: { port: 4040 },
+// })
+
+// console.log(`🚀  Server ready at: ${url}`)
