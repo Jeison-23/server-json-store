@@ -8,7 +8,7 @@ const userSchema = Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   typeId: { type: String, required: true },
-  image: { type: String },
+  image: { type: Object, required: true },
   phone: { type: String },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },

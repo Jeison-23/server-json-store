@@ -1,6 +1,7 @@
 import userModel from "../models/userModel.js"
 import CryptoJS from 'crypto-js'
 import { v4 as uuidv4 } from 'uuid'
+import { UploadImage } from "./uploadImageResolv.js"
 
 export const user = async (_, { filter = {} }) => {
   try {
@@ -43,6 +44,11 @@ export const userCreate = async (_, { input = {} }) => {
     } = input
 
     const encryptedPassword = CryptoJS.SHA512(password)
+
+    const image_to_db = await UploadImage(image[0])
+
+    console.log('file image', image_to_db);
+
     const data = {
       _id: uuidv4().toString(),
       roleId,
@@ -50,7 +56,7 @@ export const userCreate = async (_, { input = {} }) => {
       lastName,
       id,
       typeId,
-      image,
+      image: image_to_db,
       phone,
       email,
       password: encryptedPassword

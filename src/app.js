@@ -6,6 +6,7 @@ import { role, roleSave, roleDelete } from './resolvers/roleResolv.js';
 import { product, productSave, productDelete } from './resolvers/productResolv.js';
 import { category, categorySave, categoryDelete } from './resolvers/categoryResolv.js';
 import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs"
+import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs"
 import { ApolloServerPluginLandingPageProductionDefault } from 'apollo-server-core'
 import express from 'express'
 import cors from 'cors';
@@ -13,6 +14,9 @@ import http from 'http';
 import { expressMiddleware } from '@apollo/server/express4';
 
 const typeDefs = `
+  scalar Upload
+  scalar JSONObject
+
   type Category {
     _id: String
     key: String
@@ -64,6 +68,7 @@ const typeDefs = `
   type User {
     _id: String
     role: Role
+    image: JSONObject
     firstName: String
     lastName: String
     phone: String
@@ -76,6 +81,7 @@ const typeDefs = `
     roleId: String
     firstName: String
     lastName: String
+    image: JSONObject
     id: Int
     typeId: String
     phone: String
@@ -105,6 +111,7 @@ const typeDefs = `
 `;
 
 const resolvers = {
+  Upload: GraphQLUpload,
   Query: {
     role,
     user,
