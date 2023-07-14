@@ -42,12 +42,9 @@ export const userCreate = async (_, { input = {} }) => {
       email,
       id
     } = input
-
+    
     const encryptedPassword = CryptoJS.SHA512(password)
-
     const image_to_db = await UploadImage(image[0])
-
-    console.log('file image', image_to_db);
 
     const data = {
       _id: uuidv4().toString(),
@@ -56,7 +53,7 @@ export const userCreate = async (_, { input = {} }) => {
       lastName,
       id,
       typeId,
-      image: image_to_db,
+      image: image_to_db.secure_url,
       phone,
       email,
       password: encryptedPassword

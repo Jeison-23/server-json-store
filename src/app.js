@@ -68,12 +68,25 @@ const typeDefs = `
   type User {
     _id: String
     role: Role
-    image: JSONObject
+    image: String
+    firstName: String
+    lastName: String
+    id: Int
+    typeId: String
+    phone: String
+    email: String
+    password: String
+  }
+
+  input userFilter {
+    _id: String
+    id: Int
+    typeId: String
+    roleId: String
     firstName: String
     lastName: String
     phone: String
     email: String
-    password: String
   }
 
   input userInput {
@@ -81,7 +94,7 @@ const typeDefs = `
     roleId: String
     firstName: String
     lastName: String
-    image: JSONObject
+    image: [Upload]
     id: Int
     typeId: String
     phone: String
@@ -93,7 +106,7 @@ const typeDefs = `
 
   type Query {
     role: [Role]
-    user: [User]
+    user(filter: userFilter): [User]
     category: [Category]
     product: [Product]
   }

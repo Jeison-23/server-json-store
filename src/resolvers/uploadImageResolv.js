@@ -8,8 +8,7 @@ cloudinary.config({
 
 export const UploadImage = async (image) => {
   try {
-    const { file: { createReadStream } } = await image;
-    console.log('llega ',image);
+    const { createReadStream } = await image
 
     return new Promise((resolve, reject)=>{
       const uploadStream = cloudinary.v2.uploader.upload_stream(
