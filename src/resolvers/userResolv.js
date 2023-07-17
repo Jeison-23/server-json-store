@@ -64,24 +64,30 @@ export const userCreate = async (_, { input = {} }) => {
     return user._id
 
   } catch (e) {
-    console.log('error create user', e);
+    return e
   }
 }
 
 export const userUpdate = async (_, { input = {} }) => {
   try {
-    const { _id, firstName, lastName, phone, email } = input
+    const { _id, firstName, lastName, phone, email, image, typeId, id } = input
     const update = { $set: {} }
     if (firstName) update.$set.firstName = firstName
     if (lastName) update.$set.lastName = lastName
     if (phone) update.$set.phone = phone
     if (email) update.$set.email = email
-
+    if (image) {
+      const image_to_db = await UploadImage(image[0])
+      update.$set.image = image_to_db.secure_url
+    }
+    if (typeId) update.$set.typeId = typeId
+    if (id) update.$set.id = id
+    
     const response = await userModel.findOneAndUpdate({ _id }, update, { new: true })
     return response._id
 
   } catch (e) {
-    console.log('error create user', e);
+    return e
   }
 }
 
@@ -93,7 +99,7 @@ export const userSave = async (_, args = {}) => {
     else return userCreate(_, args)
 
   } catch (e) {
-    console.log('error create user', e);
+    return e
   }
 }
 
@@ -103,6 +109,6 @@ export const userDelete = async (_, { _id }) => {
     return response.acknowledged
 
   } catch (e) {
-    console.log('error delete user', e);
+    return e
   }
 }
