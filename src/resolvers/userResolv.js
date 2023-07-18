@@ -65,11 +65,10 @@ export const userCreate = async (_, { input = {} }) => {
     await user.save()
     
     if (user._id) {
-      console.log('entroo');
       const input = {
         title: '¡nuevo usuario!',
         type: 'info',
-        description: `demos le la vienvenida, a "${firstName} ${lastName}" nuestro nuevo usuario!`,
+        description: `demos le la bienvenida, a "${firstName} ${lastName}" nuestro nuevo usuario!`,
         images: [image_to_db.secure_url]
       }
 
