@@ -12,7 +12,7 @@ export const role = async (_, {filter = {}}) => {
     return await roleModel.find(query)
     
   } catch (e) {
-    console.log('error get roles',e);
+    return e
   }
 }
 
@@ -38,7 +38,6 @@ const roleCreate = async (_, {input = {}}) => {
     }
     
   } catch (e) {
-    // console.log('error create role',e)
     return e
   }
 }
@@ -54,7 +53,6 @@ const roleUpdate = async (_, {input = {}}) => {
     return response._id
 
   } catch (e) {
-    //console.log('error create user',e)
     return e
   }
 }

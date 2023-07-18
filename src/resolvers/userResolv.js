@@ -1,6 +1,7 @@
 import userModel from "../models/userModel.js"
 import CryptoJS from 'crypto-js'
 import { v4 as uuidv4 } from 'uuid'
+import { postSave } from "./postResolv.js"
 import { UploadImage } from "./uploadImageResolv.js"
 
 export const user = async (_, { filter = {} }) => {
@@ -22,6 +23,7 @@ export const user = async (_, { filter = {} }) => {
         as: "role"
       })
       .unwind({ path: '$role', preserveNullAndEmptyArrays: true })
+
     return await data.exec()
 
   } catch (e) {
@@ -61,6 +63,18 @@ export const userCreate = async (_, { input = {} }) => {
 
     const user = new userModel(data)
     await user.save()
+    
+    if (user._id) {
+      console.log('entroo');
+      const input = {
+        title: '¡nuevo usuario!',
+        type: 'info',
+        description: `demos le la vienvenida, a "${firstName} ${lastName}" nuestro nuevo usuario!`,
+        images: [image_to_db.secure_url]
+      }
+
+      await postSave(_,{input})
+    }
     return user._id
 
   } catch (e) {
@@ -105,6 +119,8 @@ export const userSave = async (_, args = {}) => {
 
 export const userDelete = async (_, { _id }) => {
   try {
+    const query = {}
+    if (_id) query._id = _id
     const response = await userModel.deleteOne({ _id })
     return response.acknowledged
 

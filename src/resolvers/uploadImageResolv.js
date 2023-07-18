@@ -6,13 +6,12 @@ cloudinary.config({
   api_secret: 'naGZTRmS8cFMjjA7cX-CA4yJXn0' 
 });
 
-export const UploadImage = async (image) => {
+export const UploadImage = async (image, folder = 'users') => {
   try {
     const { createReadStream } = await image
-
     return new Promise((resolve, reject)=>{
       const uploadStream = cloudinary.v2.uploader.upload_stream(
-        { folder: 'users' },
+        { folder },
         (error, result) => {
           if (error) {
             reject(error)
@@ -20,10 +19,9 @@ export const UploadImage = async (image) => {
             resolve(result)
           }
         }
-      );
+      )
       createReadStream().pipe(uploadStream);
     })
-
 
     // return new Promise((resolve, reject) => {
     //   uploadStream.on('error', reject);
@@ -33,3 +31,7 @@ export const UploadImage = async (image) => {
     throw e;
   }
 };
+
+export const deleteImage = async () => {
+
+}

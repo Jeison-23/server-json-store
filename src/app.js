@@ -1,17 +1,18 @@
-import './dataBase/connection.js';
-import './utils/encrypt.js';
-import { ApolloServer } from "@apollo/server";
-import { user, userSave, userDelete } from './resolvers/userResolv.js';
-import { role, roleSave, roleDelete } from './resolvers/roleResolv.js';
-import { product, productSave, productDelete } from './resolvers/productResolv.js';
-import { category, categorySave, categoryDelete } from './resolvers/categoryResolv.js';
-import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs"
-import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs"
-import { ApolloServerPluginLandingPageProductionDefault } from 'apollo-server-core'
+import cors from 'cors'
+import http from 'http'
+import './utils/encrypt.js'
 import express from 'express'
-import cors from 'cors';
-import http from 'http';
-import { expressMiddleware } from '@apollo/server/express4';
+import './dataBase/connection.js'
+import { ApolloServer } from "@apollo/server"
+import { expressMiddleware } from '@apollo/server/express4'
+import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs"
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs"
+import { user, userSave, userDelete } from './resolvers/userResolv.js'
+import { role, roleSave, roleDelete } from './resolvers/roleResolv.js'
+import { product, productSave, productDelete } from './resolvers/productResolv.js'
+import { category, categorySave, categoryDelete } from './resolvers/categoryResolv.js'
+import { post, postSave } from './resolvers/postResolv.js'
+import { ApolloServerPluginLandingPageProductionDefault } from 'apollo-server-core'
 
 const typeDefs = `
   scalar Upload
@@ -47,6 +48,26 @@ const typeDefs = `
     categoryId: String
     price: Int
     stock: Int
+  }
+
+  #----post------#
+
+  input postInput {
+    _id: String
+    title: String
+    type: String
+    images: [Upload]
+    description: String
+    link: String
+  }
+
+  type Post {
+    _id: String
+    title: String
+    type: String
+    images: [String]
+    description: String
+    link: String
   }
 
   #----role------#
@@ -107,6 +128,7 @@ const typeDefs = `
   type Query {
     role: [Role]
     user(filter: userFilter): [User]
+    post: [Post]
     category: [Category]
     product: [Product]
   }
@@ -115,6 +137,7 @@ const typeDefs = `
     roleSave(input: roleInput): ID
     roleDelete(_id: String): Boolean
     userSave(input: userInput): ID
+    postSave(input: postInput): ID
     userDelete(_id: String): Boolean
     categorySave(input: categoryInput): ID
     categoryDelete(_id: String): Boolean
@@ -128,6 +151,7 @@ const resolvers = {
   Query: {
     role,
     user,
+    post,
     category,
     product
   },
@@ -136,6 +160,7 @@ const resolvers = {
     roleDelete,
     userSave,
     userDelete,
+    postSave,
     categorySave,
     categoryDelete,
     productSave,
