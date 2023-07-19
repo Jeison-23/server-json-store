@@ -9,6 +9,8 @@ const postSchema = Schema({
   images: {type: [String], default: []},
   description: {type: String, default: ''},
   link: {type: String, default: ''},
+  createAt: {type: Date, default: Date.now},
+  updateAt: {type: Date, default: Date.now}
 },{
   _id: false,
   collection: collectionName,

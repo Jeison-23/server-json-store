@@ -28,11 +28,10 @@ export const postCreate = async (_, { input = {} }) => {
     let postImages = []
     if (images.length) {
       if (typeof images[0] !== 'string') {
-        for (const image in images) {
-          let image_to_db = await UploadImage(image, "posts")
+        for (let i = 0; i < images.length; i++) {
+          let image_to_db = await UploadImage(images[i], "posts")
           postImages.push(image_to_db?.secure_url)
         }
-        
       } else {
         postImages = images
       }
