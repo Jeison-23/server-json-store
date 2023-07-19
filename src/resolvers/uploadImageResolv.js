@@ -4,7 +4,7 @@ cloudinary.config({
   cloud_name: 'daprsm5el', 
   api_key: '412498544648892', 
   api_secret: 'naGZTRmS8cFMjjA7cX-CA4yJXn0' 
-});
+})
 
 export const UploadImage = async (image, folder = 'users') => {
   try {
@@ -23,15 +23,12 @@ export const UploadImage = async (image, folder = 'users') => {
       createReadStream().pipe(uploadStream);
     })
 
-    // return new Promise((resolve, reject) => {
-    //   uploadStream.on('error', reject);
-    //   uploadStream.on('finish', resolve);
-    // });
   } catch (e) {
     throw e;
   }
-};
+}
 
-export const deleteImage = async () => {
-
+export const deleteImage = async (url) => {
+  const publicId = url.match(/\/v\d+\/(\w+\/\w+)\./)[1];
+  await cloudinary.uploader.destroy(publicId);
 }

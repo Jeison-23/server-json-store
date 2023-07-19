@@ -2,7 +2,7 @@ import userModel from "../models/userModel.js"
 import CryptoJS from 'crypto-js'
 import { v4 as uuidv4 } from 'uuid'
 import { postSave } from "./postResolv.js"
-import { UploadImage } from "./uploadImageResolv.js"
+import { UploadImage, deleteImage } from "./uploadImageResolv.js"
 
 export const user = async (_, { filter = {} }) => {
   try {
@@ -120,6 +120,9 @@ export const userDelete = async (_, { _id }) => {
   try {
     const query = {}
     if (_id) query._id = _id
+    const user =  await userModel.find({_id})
+
+    await deleteImage(user[0].image)
     const response = await userModel.deleteOne({ _id })
     return response.acknowledged
 
