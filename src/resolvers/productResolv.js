@@ -1,5 +1,5 @@
 import productModel from '../models/productModel.js'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 export const product = async (_, { filter = {} }) => {
   try {
@@ -23,17 +23,26 @@ export const product = async (_, { filter = {} }) => {
     return await data.exec()
 
   } catch (e) {
-    console.log('error get product', e);
+    return e
   }
-
 }
 
 export const productCreate = async (_, { input = {}}) => {
   try {
-    const { name, description, categoryId, price, stock } = input
+    const { name, images, description, categoryId, price, stock } = input
+    const productImages = []
+
+    if (images.length) {
+      for (let i = 0; i < images.length; i++) {
+        const response = await UploadImage(images[i], "products")
+        productImages.push(response?.secure_url)
+      }
+    }
+
     const dataInsert = {
       _id: uuidv4().toString(),
       name,
+      images: productImages,
       description,
       categoryId,
       price,
@@ -44,7 +53,7 @@ export const productCreate = async (_, { input = {}}) => {
     return product._id
 
   } catch (e) {
-    console.log('error create product', e);
+    return e
   }
 }
 
@@ -52,7 +61,6 @@ export const productUpdate = async (_, { input = {}}) => {
   try {
     const { _id, name, description, categoryId, price, stock } = input
     const update = { $set: {} }
-
     if(name) update.$set.name = name
     if(description) update.$set.description = description
     if(categoryId) update.$set.categoryId = categoryId
@@ -64,7 +72,7 @@ export const productUpdate = async (_, { input = {}}) => {
     return rs._id
 
   } catch (e) {
-    console.log('error update product', e);
+    return e
   }
 }
 
@@ -85,7 +93,6 @@ export const productDelete = async (_,{ ids }) => {
     return response.acknowledged
     
   } catch (e) {
-    console.log('error delete product',e);
+    return e
   }
-
 }

@@ -4,8 +4,9 @@ const collectionName = 'products'
 const productSchema = Schema({
   _id: {type: String },
   name: { type: String, required: true },
-  description: String,
+  description: {type: String, default: ''},
   categoryId: {type: String, required: true},
+  images: { type: String, default: []},
   stock: {type: Number, default: 0},
   price: {type: Number, default: 0},
 },{
