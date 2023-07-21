@@ -8,7 +8,7 @@ export const post = async (_, { filter = {} }) => {
     const query = {}
     if (_id) query._id = _id
     if (title) query.title = { $regex: title, $options: 'i' }
-    return await postModel.find(query)
+    return await postModel.find(query).sort({createAt:'desc'})
 
   } catch (e) {
     return e

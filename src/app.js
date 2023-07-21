@@ -16,8 +16,9 @@ import { ApolloServerPluginLandingPageProductionDefault } from 'apollo-server-co
 
 const typeDefs = `
   scalar Upload
+  scalar DateTime
   scalar JSONObject
-
+  
   type Category {
     _id: String
     key: String
@@ -66,6 +67,7 @@ const typeDefs = `
     title: String
     type: String
     images: [String]
+    createAt: DateTime
     description: String
     link: String
   }
