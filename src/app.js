@@ -36,7 +36,7 @@ const typeDefs = `
   type Product {
     _id: String
     name: String
-    images: String
+    images: [String]
     description: String
     category: Category
     price: Int

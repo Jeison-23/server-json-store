@@ -1,5 +1,6 @@
 import productModel from '../models/productModel.js'
 import { v4 as uuidv4 } from 'uuid'
+import { UploadImage, deleteImage } from "./uploadImageResolv.js"
 
 export const product = async (_, { filter = {} }) => {
   try {
@@ -31,7 +32,6 @@ export const productCreate = async (_, { input = {}}) => {
   try {
     const { name, images, description, categoryId, price, stock } = input
     const productImages = []
-
     if (images.length) {
       for (let i = 0; i < images.length; i++) {
         const response = await UploadImage(images[i], "products")
@@ -59,13 +59,28 @@ export const productCreate = async (_, { input = {}}) => {
 
 export const productUpdate = async (_, { input = {}}) => {
   try {
-    const { _id, name, description, categoryId, price, stock } = input
+    const { _id, name, images, description, categoryId, price, stock } = input
     const update = { $set: {} }
     if(name) update.$set.name = name
     if(description) update.$set.description = description
     if(categoryId) update.$set.categoryId = categoryId
     if(price) update.$set.price = price
     if(stock) update.$set.stock = stock
+    if (images) {
+      const productImages = []
+      if (images.length) {
+        
+        for (let i = 0; i < images.length; i++) {
+          if (typeof images[i] === 'string') {
+            productImages.push(images[i])
+          } else {
+            const response = await UploadImage(images[i], "products")
+            productImages.push(response?.secure_url)
+          }
+        }
+      }
+      update.$set.images = productImages
+    }
 
     const rs = await productModel.findOneAndUpdate({ _id }, update, { new: true })
 
@@ -89,6 +104,18 @@ export const productSave = (_, args = {}) => {
 
 export const productDelete = async (_,{ ids }) => {
   try {
+    for (let i = 0; i < ids.length; i++) {
+
+      const product = await productModel.find({_id: ids[i]})
+
+      if (product.length) {
+        if (product[0]?.images?.length) {
+          for (let j = 0; j < product[0]?.images?.length; j++) {
+            await deleteImage(product[0].images[j])
+          }
+        }
+      }
+    }
     const response = await productModel.deleteMany( {_id:{ $in: ids }})
     return response.acknowledged
     
