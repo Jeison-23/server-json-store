@@ -4,10 +4,12 @@ import { UploadImage, deleteImage } from "./uploadImageResolv.js"
 
 export const product = async (_, { filter = {} }) => {
   try {
-    const { _id, name, categoryId, price } = filter
+    const { _id, name, description, categoryId, price } = filter
+    
     const query = {}
     if (_id) query._id = _id
     if (name) query.name = { $regex: name, $options: 'i' }
+    if (description) query.description = {$regex: description, $options: 'i'}
     if (categoryId) query.categoryId = categoryId
     if (price) query.price = price
 

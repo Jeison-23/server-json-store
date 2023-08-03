@@ -53,6 +53,15 @@ const typeDefs = `
     stock: Int
   }
 
+  input productFilter {
+    _id: String
+    name: String
+    description: String
+    categoryId: String
+    price: Int
+    stock: Int
+  }
+
   #----post------#
 
   input postInput {
@@ -134,7 +143,7 @@ const typeDefs = `
     user(filter: userFilter): [User]
     post: [Post]
     category: [Category]
-    product: [Product]
+    product(filter: productFilter): [Product]
   }
 
   type Mutation {
