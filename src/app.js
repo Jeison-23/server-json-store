@@ -1,6 +1,5 @@
 import cors from 'cors'
 import http from 'http'
-import './utils/encrypt.js'
 import express from 'express'
 import './dataBase/connection.js'
 import { ApolloServer } from "@apollo/server"
@@ -12,6 +11,7 @@ import { role, roleSave, roleDelete } from './resolvers/roleResolv.js'
 import { product, productSave, productDelete } from './resolvers/productResolv.js'
 import { category, categorySave, categoryDelete } from './resolvers/categoryResolv.js'
 import { post, postSave } from './resolvers/postResolv.js'
+import { login } from './resolvers/loginResolv.js'
 import { ApolloServerPluginLandingPageProductionDefault } from 'apollo-server-core'
 
 const typeDefs = `
@@ -136,10 +136,18 @@ const typeDefs = `
     password: String
   }
 
+  #----login-----#
+
+  input loginInput {
+    email: String!
+    password: String!
+  }
+
   #----query-----#
 
   type Query {
     role: [Role]
+    login(input: loginInput): ID
     user(filter: userFilter): [User]
     post: [Post]
     category: [Category]
@@ -165,6 +173,7 @@ const resolvers = {
     role,
     user,
     post,
+    login,
     category,
     product
   },

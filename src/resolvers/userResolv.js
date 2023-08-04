@@ -118,10 +118,9 @@ export const userSave = async (_, args = {}) => {
 
 export const userDelete = async (_, { _id }) => {
   try {
-    const query = {}
-    if (_id) query._id = _id
     const user =  await userModel.find({_id})
 
+    
     await deleteImage(user[0].image)
     const response = await userModel.deleteOne({ _id })
     return response.acknowledged
