@@ -26,7 +26,7 @@ export const login = async (_, { input = {} }) => {
         createAt: new Date,
         email: userObject.email,
       }
-      data.expirateDate = new Date(data.createAt.getTime() + (24 * 60 * 60 * 1000))
+      data.expirateDate = new Date(data.createAt.getTime() + (30 * 1000))
 
       const session = new sessionModel(data)
       await session.save()
