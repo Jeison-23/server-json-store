@@ -4,7 +4,7 @@ import { UploadImage, deleteImage } from "./uploadImageResolv.js"
 
 export const product = async (_, { filter = {} }) => {
   try {
-    const { _id, name, description, categoryId, price } = filter
+    const { _id, name, description, categoryId, price, from, upTo } = filter
     
     const query = {}
     if (_id) query._id = _id
@@ -12,6 +12,7 @@ export const product = async (_, { filter = {} }) => {
     if (description) query.description = {$regex: description, $options: 'i'}
     if (categoryId) query.categoryId = categoryId
     if (price) query.price = price
+    if(from && upTo) query.$and = [{price: {$gte: from}}, {price: {$lte: upTo}}]
 
     const data = productModel.aggregate([])
       .match(query)

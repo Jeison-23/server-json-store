@@ -59,6 +59,8 @@ const typeDefs = `
     description: String
     categoryId: String
     price: Int
+    from: Int
+    upTo: Int
     stock: Int
   }
 
