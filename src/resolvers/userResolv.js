@@ -68,7 +68,10 @@ export const userCreate = async (_, { input = {} }) => {
       const input = {
         title: '¡nuevo usuario!',
         type: 'info',
-        description: `demos le la bienvenida, a "${firstName} ${lastName}" nuestro nuevo usuario!`,
+        description: `Démosle la bienvenida, a "${firstName} ${lastName}", 
+        quien se convirtio en un nuevo miebro de nuestra grandiosa comunidad, 
+        te damos la bienvenida de parte del equipo de JSON STORE y de la comunidad; 
+        ¡¡Bienvenido😁🫶!!`,
         images: [image_to_db.secure_url]
       }
 
