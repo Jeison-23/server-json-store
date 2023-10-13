@@ -18,11 +18,12 @@ export const role = async (_, {filter = {}}) => {
 
 const roleCreate = async (_, {input = {}}) => {
   try {
-    const { key, rol } = input
+    const { key, rol, accessKeys } = input
     const data = {
       _id: uuidv4().toString(),
       key,
       rol,
+      accessKeys
     }
 
     const rolekeyUnique = await roleModel.find({key: key})
@@ -44,10 +45,11 @@ const roleCreate = async (_, {input = {}}) => {
 
 const roleUpdate = async (_, {input = {}}) => {
   try {
-    const { _id, key, rol } = input
+    const { _id, rol, accessKeys } = input
     const update = {$set:{}}
     // if(key) update.$set.key = key
     if(rol) update.$set.rol = rol
+    if (accessKeys)  update.$set.accessKeys = accessKeys
 
     const response = await roleModel.findOneAndUpdate({_id},update,{new: true})
     return response._id

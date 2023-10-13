@@ -91,12 +91,14 @@ const typeDefs = `
     _id: String
     key: String
     rol: String
+    accessKeys: [String]
   }
 
   input roleInput {
     _id: String
     key: String
     rol: String
+    accessKeys: [String]
   }
 
   #----user------#
