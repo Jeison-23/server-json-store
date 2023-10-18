@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
+import CryptoJS from 'crypto-js'
 import userModel from "../models/userModel.js"
 import sessionModel from '../models/sessionModel.js'
 
@@ -6,28 +7,26 @@ export const login = async (_, { input = {} }) => {
   try {
     const { email, password } = input
     const query = {}
+    const pass = CryptoJS.SHA512(password)
     if (email) query.email = email
-    if (password) query.password = password
+    if (password) query.password = pass.toString()
+    const user = await userModel.findOne(query)
 
-    const user = await userModel.find(query)
-
-    if (user.length) {
-      const userObject = user[0]
+    if (user) {
       const data = {
         _id: uuidv4().toString(),
-        userId: userObject._id,
-        roleId: userObject.roleId,
-        firstName: userObject.firstName,
-        lastName: userObject.lastName,
-        id: userObject.id,
-        typeId: userObject.typeId,
-        image: userObject.image,
-        phone: userObject.phone,
+        userId: user._id,
+        roleId: user.roleId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        id: user.id,
+        typeId: user.typeId,
+        image: user.image,
+        phone: user.phone,
         createAt: new Date,
-        email: userObject.email,
+        email: user.email,
       }
-      data.expirateDate = new Date(data.createAt.getTime() + (30 * 1000))
-
+      data.expirateDate = new Date(data.createAt.getTime() + (24 * 3600000))
       const session = new sessionModel(data)
       await session.save()
 

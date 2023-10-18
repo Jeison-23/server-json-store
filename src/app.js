@@ -13,6 +13,7 @@ import { category, categorySave, categoryDelete } from './resolvers/categoryReso
 import { post, postSave } from './resolvers/postResolv.js'
 import { login } from './resolvers/loginResolv.js'
 import { ApolloServerPluginLandingPageProductionDefault } from 'apollo-server-core'
+import sessionModel from './models/sessionModel.js'
 
 const typeDefs = `
   scalar Upload
@@ -228,7 +229,16 @@ export async function startApolloServer() {
     "/gql",
     cors(),
     express.json(),
-    expressMiddleware(server)
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const { token } = req.headers
+        const session = await sessionModel.findOne({_id: token})
+        
+        return {
+          session
+        }
+      }
+    })
   );
 
   app.get('/', (req, res) => {

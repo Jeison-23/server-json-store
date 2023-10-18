@@ -4,8 +4,9 @@ import { v4 as uuidv4 } from 'uuid'
 import { postSave } from "./postResolv.js"
 import { UploadImage, deleteImage } from "./uploadImageResolv.js"
 
-export const user = async (_, { filter = {} }) => {
+export const user = async (_, { filter = {} }, ctx) => {
   try {
+    const { session } = ctx
     const { _id, lastName, firstName, email, password } = filter
     const query = {}
     if (_id) query._id = _id

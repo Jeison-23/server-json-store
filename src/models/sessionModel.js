@@ -12,7 +12,7 @@ const roleSchema = Schema({
   typeId: { type: String, required: true },
   image: { type: String, required: true },
   phone: { type: String },
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true},
   createAt: {type: Date, default: Date.now},
   expiredDate: {type: Date, default: Date.now, expires: 10},
   expired: {type: Boolean, default: false}
