@@ -14,6 +14,7 @@ import { post, postSave } from './resolvers/postResolv.js'
 import { login } from './resolvers/loginResolv.js'
 import { ApolloServerPluginLandingPageProductionDefault } from 'apollo-server-core'
 import sessionModel from './models/sessionModel.js'
+import { session } from './resolvers/sessionResolve.js'
 
 const typeDefs = `
   scalar Upload
@@ -141,6 +142,29 @@ const typeDefs = `
     password: String
   }
 
+  #----session---#
+  
+  input sessionInput {
+    _id: String
+    userId: String
+    roleId: String
+    email: String
+    firstName: String
+    lastName: String
+  }
+
+  type Session {
+    _id: String
+    userId: String
+    role: Role
+    email: String
+    firstName: String
+    lastName: String
+    image: String
+    typeId: String
+    id: Int
+  }
+
   #----login-----#
 
   input loginInput {
@@ -153,6 +177,7 @@ const typeDefs = `
   type Query {
     role: [Role]
     login(input: loginInput): ID
+    session(filter: sessionInput): [Session]
     user(filter: userFilter): [User]
     post: [Post]
     category: [Category]
@@ -179,6 +204,7 @@ const resolvers = {
     user,
     post,
     login,
+    session,
     category,
     product
   },

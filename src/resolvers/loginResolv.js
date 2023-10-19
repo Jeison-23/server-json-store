@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import CryptoJS from 'crypto-js'
 import userModel from "../models/userModel.js"
+import roleModel from "../models/roleModel.js"
 import sessionModel from '../models/sessionModel.js'
 
 export const login = async (_, { input = {} }) => {
@@ -30,6 +31,12 @@ export const login = async (_, { input = {} }) => {
       const session = new sessionModel(data)
       await session.save()
 
+      const role = await roleModel.findOne({_id: user.roleId})
+
+      const dataToReturn = {
+        access: role.accessKey,
+        token: session._id
+      }
       return session._id
 
     } else {

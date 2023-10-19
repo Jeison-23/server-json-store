@@ -14,7 +14,7 @@ const roleSchema = Schema({
   phone: { type: String },
   email: { type: String, required: true},
   createAt: {type: Date, default: Date.now},
-  expiredDate: {type: Date, default: Date.now, expires: 10},
+  expiredDate: {type: Date, default: Date.now, expires: 86400},
   expired: {type: Boolean, default: false}
 }, {
   _id: false,
