@@ -2,19 +2,20 @@ import cors from 'cors'
 import http from 'http'
 import express from 'express'
 import './dataBase/connection.js'
-import { ApolloServer } from "@apollo/server"
-import { expressMiddleware } from '@apollo/server/express4'
-import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs"
-import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs"
-import { user, userSave, userDelete } from './resolvers/userResolv.js'
-import { role, roleSave, roleDelete } from './resolvers/roleResolv.js'
-import { product, productSave, productDelete } from './resolvers/productResolv.js'
-import { category, categorySave, categoryDelete } from './resolvers/categoryResolv.js'
-import { post, postSave } from './resolvers/postResolv.js'
+import { ApolloServer } from '@apollo/server'
 import { login } from './resolvers/loginResolv.js'
-import { ApolloServerPluginLandingPageProductionDefault } from 'apollo-server-core'
 import sessionModel from './models/sessionModel.js'
 import { session } from './resolvers/sessionResolve.js'
+import { post, postSave } from './resolvers/postResolv.js'
+import { sale, saleSave } from './resolvers/saleResolv.js'
+import { expressMiddleware } from '@apollo/server/express4'
+import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs"
+import { user, userSave, userDelete } from './resolvers/userResolv.js'
+import { role, roleSave, roleDelete } from './resolvers/roleResolv.js'
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs'
+import { product, productSave, productDelete } from './resolvers/productResolv.js'
+import { ApolloServerPluginLandingPageProductionDefault } from 'apollo-server-core'
+import { category, categorySave, categoryDelete } from './resolvers/categoryResolv.js'
 
 const typeDefs = `
   scalar Upload
@@ -165,6 +166,54 @@ const typeDefs = `
     id: Int
   }
 
+  #-----sale-----#
+
+  type PurshasedItem {
+    _id: String
+    name: String
+    price: Int
+    quantity: Int
+    category: Category
+  }
+
+  type Sale {
+    _id: String
+    customerName: String
+    customerId: String
+    address: String
+    phone: String
+    reciverName: String
+    cardNumber: String
+    cvv: String
+    purchasedItems: [PurshasedItem]
+  }
+
+  input saleFilter {
+    _id: String
+    customerId: String
+    createAt: String
+  }
+
+  input purshasedItemInput {
+    _id: String
+    name: String
+    price: Int
+    quantity: Int
+    category: categoryInput
+  }
+
+  input saleInput {
+    _id: String
+    customerName: String
+    customerId: String
+    address: String
+    phone: String
+    reciverName: String
+    cardNumber: String
+    cvv: String
+    purchasedItems: [purshasedItemInput]
+  }
+
   #----login-----#
 
   input loginInput {
@@ -182,12 +231,14 @@ const typeDefs = `
     post: [Post]
     category: [Category]
     product(filter: productFilter): [Product]
+    sale(filter: saleFilter): [Sale]
   }
 
   type Mutation {
     roleSave(input: roleInput): ID
     roleDelete(_id: String): Boolean
     userSave(input: userInput): ID
+    saleSave(input: saleInput): ID
     postSave(input: postInput): ID
     userDelete(_id: String): Boolean
     categorySave(input: categoryInput): ID
@@ -203,6 +254,7 @@ const resolvers = {
     role,
     user,
     post,
+    sale,
     login,
     session,
     category,
@@ -214,6 +266,7 @@ const resolvers = {
     userSave,
     userDelete,
     postSave,
+    saleSave,
     categorySave,
     categoryDelete,
     productSave,

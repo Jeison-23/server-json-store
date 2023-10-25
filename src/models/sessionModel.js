@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose'
 
-const collectionName = 'session'
+const collectionName = 'sessions'
 
-const roleSchema = Schema({
+const sessionSchema = Schema({
   _id: { type: String },
   userId: { type: String, required: true},
   id: { type: Number, required: true },
@@ -22,4 +22,4 @@ const roleSchema = Schema({
   versionKey: false
 })
 
-export default model(collectionName, roleSchema)
+export default model(collectionName, sessionSchema)
