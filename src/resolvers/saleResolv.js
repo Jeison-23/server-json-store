@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid"
 import saleModel from "../models/saleModel.js"
+import productModel from '../models/productModel.js'
 
 export const sale = async (_, { filter = {} }) => {
   try {
@@ -17,8 +18,25 @@ export const sale = async (_, { filter = {} }) => {
 
 const saleCreate = async (_, { input = {} }) => {
   try {
+    const { purchasedItems } = input
     const data = { ...input, _id: uuidv4().toString() }
     const sale = new saleModel(data)
+
+    if (purchasedItems?.length) {
+      const prodQuantity = {}
+      const itemsId = purchasedItems.map(item => {
+        prodQuantity[item._id] = item.quantity
+        return item._id
+      })
+      const products = await productModel.find({ _id: { $in: itemsId } })
+
+      products.map(async (p) => {
+        if (p.stock > prodQuantity[p._id]) {
+          const newVal = p.stock - prodQuantity[p._id]
+          await productModel.findOneAndUpdate({ _id: p._id }, { $set: { stock: newVal} }, { new: true })
+        }
+      })
+    }
 
     await sale.save()
 
