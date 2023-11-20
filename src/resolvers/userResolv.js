@@ -87,12 +87,13 @@ export const userCreate = async (_, { input = {} }) => {
 
 export const userUpdate = async (_, { input = {} }) => {
   try {
-    const { _id, firstName, lastName, phone, email, image, typeId, id } = input
+    const { _id, firstName, lastName, phone, roleId, email, image, typeId, id } = input
     const update = { $set: {} }
     if (firstName) update.$set.firstName = firstName
     if (lastName) update.$set.lastName = lastName
     if (phone) update.$set.phone = phone
     if (email) update.$set.email = email
+    if (roleId)update.$set.roleId = roleId
     if (image) {
       const image_to_db = await UploadImage(image[0])
       update.$set.image = image_to_db.secure_url

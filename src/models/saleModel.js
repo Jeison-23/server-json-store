@@ -11,7 +11,15 @@ const saleSchema = Schema({
   cardNumber: { type: String, required: true },
   cvv: { type: String, required: true },
   purchasedItems: {type: [Object], required: true},
-  createAt: {type: Date, default: Date.now},
+  totalSale: { type: Number, default: 0, required: true},
+  createAt: {
+    date: { type: Date, default: 0, required: true },
+    year: { type: Number, default: 0, required: true},
+    month: { type: Number, default: 0, required: true},
+    dayMonth: { type: Number, default: 0, required: true},
+    day: { type: Number, default: 0, required: true},
+    hour: { type: Number, default: 0, required: true},
+  }
 },{
   _id: false,
   collection: collectionName,

@@ -16,6 +16,7 @@ import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs'
 import { product, productSave, productDelete } from './resolvers/productResolv.js'
 import { ApolloServerPluginLandingPageProductionDefault } from 'apollo-server-core'
 import { category, categorySave, categoryDelete } from './resolvers/categoryResolv.js'
+import { productReport } from './resolvers/productReportResolv.js'
 
 const typeDefs = `
   scalar Upload
@@ -159,6 +160,7 @@ const typeDefs = `
     userId: String
     role: Role
     email: String
+    phone: String
     firstName: String
     lastName: String
     image: String
@@ -214,6 +216,28 @@ const typeDefs = `
     purchasedItems: [purshasedItemInput]
   }
 
+  #----report----#
+
+  input productReportFilter {
+    _id: String
+    customerId: String
+    cardNumber: String
+    productId: String
+    month: Int
+    day: Int
+    date: DateTime
+    year: Int
+    dayMonth: Int
+  }
+
+  type ProductReport {
+    _id: String
+    customerId: String
+    cardNumber: String
+    purchasedItems: [PurshasedItem]
+    createAt: DateTime
+  }
+
   #----login-----#
 
   input loginInput {
@@ -232,6 +256,7 @@ const typeDefs = `
     category: [Category]
     product(filter: productFilter): [Product]
     sale(filter: saleFilter): [Sale]
+    productReport(filter: productReportFilter): JSONObject
   }
 
   type Mutation {
@@ -258,7 +283,8 @@ const resolvers = {
     login,
     session,
     category,
-    product
+    product,
+    productReport,
   },
   Mutation: {
     roleSave,

@@ -18,8 +18,19 @@ export const sale = async (_, { filter = {} }) => {
 
 const saleCreate = async (_, { input = {} }) => {
   try {
-    const { purchasedItems } = input
-    const data = { ...input, _id: uuidv4().toString() }
+    const { purchasedItems = [] } = input
+    const dateTime = new Date()
+    const data = { ...input, _id: uuidv4().toString(), createAt:{
+      date: dateTime,
+      year: dateTime.getFullYear(),
+      month: dateTime.getMonth() + 1,
+      dayMonth: dateTime.getDate(),
+      day: dateTime.getDay() +1,
+      hour: dateTime.getHours(),
+    }}
+    if (purchasedItems.length) {
+      data.totalSale = purchasedItems.reduce((acc, cur) => acc + (cur.price * cur.quantity), 0)
+    }
     const sale = new saleModel(data)
 
     if (purchasedItems?.length) {
